@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useReducer, useState } from "react";
 import "./App.css";
 
 // Data
@@ -23,30 +23,62 @@ const initalSteps = [
     prevBtnType: true,
     nextBtnType: false,
   },
-]
+];
 
+// ======= Document
 
 export default function App() {
-  const [steps, dispatch] = useReducer(stepReducer, initalSteps);
+  // const [steps, dispatch] = useReducer(stepReducer, initalSteps);
+  const [number, setNumber] = useState(1);
 
+  // function stepReducer(steps, action) {
+  //   switch (action.type) {
+  //     case "ADD_STEP":
+  //       return "mobin";
+  //     case "PREV_STEP":
+  //       return "Maha";
+  //     default:
+  //       return steps;
+  //   }
+  // }
 
+  // const nextBtn = document.getElementById("#nextBtn");
 
-  function stepReducer(steps, action) {
-    switch (action.type) {
-      case 'ADD_STEP':
-        return 'mobin'
-      default:
-        return steps;
-    }
-  }
+  // if (number === 0) {
+  // return (prevBtn.style.backgroundColor = "gray");
+  // }
 
-  const handleClick = () => {
-    console.log('click')
+  // switch (number) {
+  //   case 0: {
+  //   }
+  //   default:
+  //     break;
+  // }
+
+  // console.log(preb)
+
+  // document.getElementById("off").style.color = "white";
+  // ====================================
+
+  // Prev Btn HandleClick
+  const handlePrevClick = () => {
+    console.log("PrevBtn Click");
+
+    setNumber(number - 1);
+    console.log(number);
+  };
+
+  // Next Btn HandleClick
+  const handleNextClick = () => {
+    console.log("NextBtn Click");
+
+    setNumber(number + 1);
+    console.log(number);
   };
 
   return (
     <div className="container">
-      <div className="pages">
+      <div id="pages" className="pages">
         <div className="active">1</div>
         <span className=""></span>
         <div className="">2</div>
@@ -55,22 +87,42 @@ export default function App() {
         <span className=""></span>
         <div className="">4</div>
       </div>
-      <div className="btns">
-        <button
-          onClick={() => handleClick()}
-          id="prevBtn"
-          data-testid="prevBtn"
-          className="prevBtn"
-        >
-          Prev
-        </button>
-        <button onClick={() => handleClick()} id="nextBtn" data-testid="nextBtn">
-          Next
-        </button>
+      <div id="btns" className="btns">
+        {number === 1 ? (
+          <button
+          
+          id="prevBtn" className="prevBtn">
+            Prev
+          </button>
+        ) : (
+          <button
+            onClick={() => handlePrevClick()}
+            id="prevBtn"
+            data-testid="prevBtn"
+          >
+            Prev
+          </button>
+        )}
+        {number === 4 ? (
+          <button id="nextBtn" className="">
+            Next
+          </button>
+        ) : (
+          <button
+            onClick={() => handleNextClick()}
+            id="nextBtn"
+            data-testid="nextBtn"
+          >
+            Next
+          </button>
+        )}
       </div>
     </div>
   );
 }
+
+// const prevBtn = document.getElementById("btns");
+// console.log(prevBtn.childNodes);
 
 // export default App;
 

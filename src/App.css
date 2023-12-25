@@ -34,14 +34,14 @@ body {
   padding: 8px 15px;
   font-weight: 600;
 }
-
+/* 
 .pages > div.active {
   border: 5px solid rgb(70, 92, 216);
 }
 
 .pages > span.active {
   background-color: rgb(70, 92, 216);
-}
+} */
 
 .pages span {
   content: "";
