@@ -8,18 +8,46 @@ const ACTIONS = {
   DISACTIVE_COLOR: 'gray',
 }
 
-function stepsReducer(steps, action) {
-  switch (action.type) {
-    case ACTIONS.NEXT_STEP:
-      // let pages = document.getElementById('pages').childNodes
-      if (action.payload.step < 5 && action.payload.step > 0) return [...steps, { stepNum: action.payload.step, prevBtnColor: ACTIONS.ACTIVE_COLOR, nextBtnColor: ACTIONS.ACTIVE_COLOR }]
-      return [...steps]
+const initialStep = [
+  {
+    stepNum: 1,
+    prevBtnColor: ACTIONS.DISACTIVE_COLOR,
+    nextBtnColor: ACTIONS.ACTIVE_COLOR,
+    backgroundColor: ACTIONS.ACTIVE_COLOR,
+    borderColor: ACTIONS.ACTIVE_COLOR,
+  },
+]
 
+function stepsReducer(steps, action) {
+  const { type, payload } = action
+  // Delete Step Fuction
+  function deleteStep(step) {
+    return step.stepNum < action.payload.step - 1
+  }
+  // get element
+  let divs = document.querySelector('#pages').getElementsByTagName('div')
+  let spans = document.querySelector('#pages').getElementsByTagName('span')
+  // switch if else statement
+  switch (type) {
+    // Next Btn
+    case ACTIONS.NEXT_STEP:
+      divs[payload.step - 1].style.borderColor = ACTIONS.ACTIVE_COLOR
+      spans[payload.step - 2].style.backgroundColor = ACTIONS.ACTIVE_COLOR
+      if (payload.step < 5 && payload.step > 0) return [...steps,
+      {
+        stepNum: payload.step,
+        prevBtnColor: ACTIONS.ACTIVE_COLOR,
+        nextBtnColor: steps[payload.step - 2].stepNum === 4 ? ACTIONS.DISACTIVE_COLOR : ACTIONS.ACTIVE_COLOR,
+        divNum: `div[${payload.step - 1}]`,
+        spanNum: `span[${payload.step - 2}]`,
+      }]
+      return [...steps]
+    // Prev Btn
     case ACTIONS.PREV_STEP:
-      const newSteps = [...steps].filter((step) => {
-        return step.stepNum < action.payload.step
-      })
-      return newSteps
+      divs[payload.step - 2].style.borderColor = ACTIONS.DISACTIVE_COLOR
+      spans[payload.step - 3].style.backgroundColor = ACTIONS.DISACTIVE_COLOR
+      const newSteps = steps.filter(deleteStep)
+      return newSteps;
     // if(){}
     default:
       return steps;
@@ -27,37 +55,24 @@ function stepsReducer(steps, action) {
 }
 
 export default function App() {
-  const [steps, dispatch] = useReducer(stepsReducer, [{ stepNum: 0, prevBtnColor: ACTIONS.ACTIVE_COLOR, nextBtnColor: ACTIONS.ACTIVE_COLOR }])
-  const [number, setNumber] = useState(1);
+  const [steps, dispatch] = useReducer(stepsReducer, initialStep)
+  const [number, setNumber] = useState(2);
 
   // Handle Next Click 
   const handlePrevClick = () => {
-    setNumber(number - 1);
     dispatch({ type: ACTIONS.PREV_STEP, payload: { step: number } })
-    let divs = document.querySelector('#pages').getElementsByTagName('div')
-    let spans = document.querySelector('#pages').getElementsByTagName('span')
-    divs[number].style.borderColor = ACTIONS.DISACTIVE_COLOR
-    spans[number - 1].style.backgroundColor = ACTIONS.DISACTIVE_COLOR
+    setNumber(number - 1);
   };
 
   // Handle Next Click 
   const handleNextClick = () => {
     setNumber(number + 1);
     dispatch({ type: ACTIONS.NEXT_STEP, payload: { step: number } })
-    let divs = document.querySelector('#pages').getElementsByTagName('div')
-    let spans = document.querySelector('#pages').getElementsByTagName('span')
-    divs[number].style.borderColor = ACTIONS.ACTIVE_COLOR
-    spans[number - 1].style.backgroundColor = ACTIONS.ACTIVE_COLOR
-    console.log(number)
-    console.log(divs)
-    console.log(spans)
   };
-
-  console.log(steps)
   return (
     <div className="container">
       <div id="pages" className="pages">
-        <div style={{ borderColor: ACTIONS.ACTIVE_COLOR }}>1</div>
+        <div style={{ borderColor: steps[number - 2].nextBtnColor }}>1</div>
         <span></span>
         <div>2</div>
         <span></span>
@@ -68,11 +83,12 @@ export default function App() {
       <div id="btns" className="btns">
         <button
           onClick={() => {
-            if (number === 1) {
+            if (number === 2) {
               return;
             }
             return handlePrevClick()
           }}
+          style={number === 2 ? { backgroundColor: ACTIONS.DISACTIVE_COLOR } : { backgroundColor: ACTIONS.ACTIVE_COLOR }}
           id="prevBtn"
           data-testid="prevBtn"
         >
@@ -80,17 +96,18 @@ export default function App() {
         </button>
         <button
           onClick={() => {
-            if (number === 4) {
+            if (number === 5) {
               return;
             }
             return handleNextClick()
           }}
+          style={number === 5 ? { backgroundColor: ACTIONS.DISACTIVE_COLOR } : { backgroundColor: ACTIONS.ACTIVE_COLOR }}
           id="nextBtn"
           data-testid="nextBtn"
         >
           Next
         </button>
       </div>
-    </div>
+    </div >
   );
 }
