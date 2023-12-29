@@ -48,7 +48,7 @@ function stepsReducer(steps, action) {
       spans[payload.step - 3].style.backgroundColor = ACTIONS.DISACTIVE_COLOR
       const newSteps = steps.filter(deleteStep)
       return newSteps;
-    // if(){}
+    // Default
     default:
       return steps;
   }
@@ -58,7 +58,10 @@ export default function App() {
   const [steps, dispatch] = useReducer(stepsReducer, initialStep)
   const [number, setNumber] = useState(2);
 
-  // Handle Next Click 
+
+
+
+  // Handle Prev Click 
   const handlePrevClick = () => {
     dispatch({ type: ACTIONS.PREV_STEP, payload: { step: number } })
     setNumber(number - 1);
@@ -83,27 +86,23 @@ export default function App() {
       <div id="btns" className="btns">
         <button
           onClick={() => {
-            if (number === 2) {
-              return;
-            }
-            return handlePrevClick()
+            handlePrevClick()
           }}
           style={number === 2 ? { backgroundColor: ACTIONS.DISACTIVE_COLOR } : { backgroundColor: ACTIONS.ACTIVE_COLOR }}
           id="prevBtn"
           data-testid="prevBtn"
+          disabled={number === 2 ? true : false}
         >
           Prev
         </button>
         <button
           onClick={() => {
-            if (number === 5) {
-              return;
-            }
-            return handleNextClick()
+            handleNextClick()
           }}
           style={number === 5 ? { backgroundColor: ACTIONS.DISACTIVE_COLOR } : { backgroundColor: ACTIONS.ACTIVE_COLOR }}
           id="nextBtn"
           data-testid="nextBtn"
+          disabled={number === 5 ? true : false}
         >
           Next
         </button>
